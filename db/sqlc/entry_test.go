@@ -60,3 +60,15 @@ func TestUpdateEntry(t *testing.T) {
 	require.NotEmpty(t, updatedEntry)
 	require.EqualValues(t, arg.ID, updatedEntry.ID)
 }
+
+func TestUpdateEntryFailure(t *testing.T) {
+	arg := UpdateEntryParams{
+		ID:     util.RandomInt(0, 1),
+		Amount: util.RandomMoney(),
+	}
+
+	updatedEntry, err := testQueries.UpdateEntry(context.Background(), arg)
+
+	require.Error(t, err)
+	require.Empty(t, updatedEntry)
+}
