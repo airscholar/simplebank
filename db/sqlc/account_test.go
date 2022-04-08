@@ -49,6 +49,13 @@ func TestGetAccount(t *testing.T) {
 	require.WithinDuration(t, account1.CreatedAt, account2.CreatedAt, time.Second)
 }
 
+func TestGetAccountFailure(t *testing.T) {
+	account1, err := testQueries.GetAccount(context.Background(), util.RandomInt(10000, 100000))
+
+	require.Error(t, err)
+	require.Empty(t, account1)
+}
+
 func TestUpdateAccount(t *testing.T) {
 	account1 := createRandomAccount(t)
 	arg := UpdateAccountParams{
@@ -99,4 +106,15 @@ func TestListAccount(t *testing.T) {
 	for _, account := range accounts {
 		require.NotEmpty(t, account)
 	}
+}
+
+func TestListAccountFailure(t *testing.T) {
+	arg := ListAccountsParams{
+		Limit:  0,
+		Offset: 0,
+	}
+	accounts, err := testQueries.ListAccounts(context.Background(), arg)
+
+	require.Empty(t, accounts)
+	require.Empty(t, err)
 }
