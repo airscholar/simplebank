@@ -39,3 +39,24 @@ func TestCreateEntryFailure(t *testing.T) {
 	require.Error(t, err)
 	require.Empty(t, entry)
 }
+
+func TestUpdateEntry(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		createRandomAccount(t)
+	}
+
+	for i := 0; i < 10; i++ {
+		createRandomEntry(t, 1, 10)
+	}
+
+	arg := UpdateEntryParams{
+		ID:     util.RandomInt(2, 11),
+		Amount: util.RandomMoney(),
+	}
+
+	updatedEntry, err := testQueries.UpdateEntry(context.Background(), arg)
+
+	require.NoError(t, err)
+	require.NotEmpty(t, updatedEntry)
+	require.EqualValues(t, arg.ID, updatedEntry.ID)
+}
