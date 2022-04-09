@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"testing"
+	"time"
 
 	"github.com/airscholar/simplebank/util"
 	"github.com/stretchr/testify/require"
@@ -97,4 +98,15 @@ func TestDeleteEntryFailure(t *testing.T) {
 	err := testQueries.DeleteEntry(context.Background(), -10)
 
 	require.Empty(t, err)
+}
+
+func TestGetEntry(t *testing.T) {
+	createRandomAccount(t)
+	entry1 := createRandomEntry(t, 1, 1)
+	entry2, err := testQueries.GetEntry(context.Background(), entry1.ID)
+
+	require.NoError(t, err)
+	require.Equal(t, entry1.ID, entry2.ID)
+	require.Equal(t, entry1.Amount, entry2.Amount)
+	require.WithinDuration(t, entry1.CreatedAt, entry2.CreatedAt, time.Second)
 }
