@@ -16,6 +16,7 @@ var (
 )
 
 var testQueries *Queries
+var testDb *sql.DB
 
 func goDotEnvVariable(key string) string {
 	// load .env file
@@ -29,13 +30,15 @@ func goDotEnvVariable(key string) string {
 }
 
 func TestMain(m *testing.M) {
-	conn, err := sql.Open(dbDriver, dbSource)
+	var err error
+
+	testDb, err = sql.Open(dbDriver, dbSource)
 
 	if err != nil {
 		log.Fatal("Cannot connect to the db", err)
 	}
 
-	testQueries = New(conn)
+	testQueries = New(testDb)
 
 	os.Exit(m.Run())
 }
