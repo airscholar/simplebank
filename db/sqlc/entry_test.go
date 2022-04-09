@@ -110,3 +110,10 @@ func TestGetEntry(t *testing.T) {
 	require.Equal(t, entry1.Amount, entry2.Amount)
 	require.WithinDuration(t, entry1.CreatedAt, entry2.CreatedAt, time.Second)
 }
+
+func TestGetEntryFailure(t *testing.T) {
+	account, err := testQueries.GetAccount(context.Background(), -1)
+
+	require.Empty(t, account)
+	require.EqualError(t, err, sql.ErrNoRows.Error())
+}
