@@ -23,6 +23,9 @@ func createRandomTransfer(t *testing.T) Transfer {
 	return transfer
 }
 func TestCreateTransfer(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		createRandomAccount(t)
+	}
 	createRandomTransfer(t)
 }
 
@@ -37,4 +40,28 @@ func TestCreateTransferFailure(t *testing.T) {
 
 	require.Error(t, err)
 	require.Empty(t, transfer)
+}
+
+func TestUpdateTransferFromId(t *testing.T) {
+	for i := 0; i < 2; i++ {
+		createRandomAccount(t)
+	}
+
+	account1, err := testQueries.GetAccount(context.Background(), 1)
+	require.NoError(t, err)
+	account2, err := testQueries.GetAccount(context.Background(), 2)
+	require.NoError(t, err)
+
+	arg := UpdateTransferByFromIdParams{
+		FromAccountID: account1.ID,
+		ToAccountID:   account2.ID,
+		Amount:        util.RandomMoney(),
+	}
+
+	transfer, err := testQueries.UpdateTransferByFromId(context.Background(), arg)
+
+	require.NoError(t, err)
+	require.Equal(t, arg.Amount, transfer.Amount)
+	require.Equal(t, arg.ToAccountID, transfer.ToAccountID)
+	require.Equal(t, account1.ID, transfer.FromAccountID)
 }
