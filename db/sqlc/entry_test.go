@@ -92,3 +92,9 @@ func TestDeleteEntry(t *testing.T) {
 	require.Empty(t, entry)
 	require.EqualError(t, err, sql.ErrNoRows.Error())
 }
+
+func TestDeleteEntryFailure(t *testing.T) {
+	err := testQueries.DeleteEntry(context.Background(), -10)
+
+	require.Empty(t, err)
+}
