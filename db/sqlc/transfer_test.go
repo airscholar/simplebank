@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 
 	"github.com/airscholar/simplebank/util"
@@ -70,10 +71,10 @@ func TestUpdateTransferFromId(t *testing.T) {
 }
 
 func TestUpdateTransferToId(t *testing.T) {
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 10; i++ {
 		createRandomAccount(t)
 	}
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 10; i++ {
 		createRandomTransfer(t)
 	}
 
@@ -94,4 +95,20 @@ func TestUpdateTransferToId(t *testing.T) {
 	require.Equal(t, arg.Amount, transfer.Amount)
 	require.Equal(t, arg.ToAccountID, transfer.ToAccountID)
 	require.Equal(t, account1.ID, transfer.FromAccountID)
+}
+
+func TestDeleteTransfer(t *testing.T) {
+	createRandomAccount(t)
+
+	transfer := createRandomTransfer(t)
+
+	err := testQueries.DeleteTransfer(context.Background(), transfer.ID)
+
+	require.NoError(t, err)
+
+	trf, err := testQueries.GetTransfer(context.Background(), transfer.ID)
+
+	require.Error(t, err)
+	require.Empty(t, trf)
+	require.EqualError(t, err, sql.ErrNoRows.Error())
 }
