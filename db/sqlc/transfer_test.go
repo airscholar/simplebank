@@ -119,3 +119,67 @@ func TestDeleteTransferFailure(t *testing.T) {
 	require.Empty(t, err)
 }
 
+func TestGetTransfer(t *testing.T) {
+	createRandomTransfer(t)
+
+	transfer, err := testQueries.GetTransfer(context.Background(), util.RandomInt(1, 2))
+
+	require.NoError(t, err)
+	require.NotEmpty(t, transfer)
+}
+
+func TestGetTransfers(t *testing.T) {
+	for i := 0; i < 6; i++ {
+		createRandomTransfer(t)
+	}
+
+	arg := GetTransfersParams{
+		Offset: 3,
+		Limit:  3,
+	}
+	transfers, err := testQueries.GetTransfers(context.Background(), arg)
+
+	require.NoError(t, err)
+
+	for _, transfer := range transfers {
+		require.NotEmpty(t, transfer)
+	}
+}
+
+func TestGetTransfersByFromId(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		createRandomTransfer(t)
+	}
+
+	arg := GetTransfersByFromIdParams{
+		FromAccountID: 1,
+		Offset:        3,
+		Limit:         3,
+	}
+	transfers, err := testQueries.GetTransfersByFromId(context.Background(), arg)
+
+	require.NoError(t, err)
+
+	for _, transfer := range transfers {
+		require.NotEmpty(t, transfer)
+	}
+}
+
+func TestGetTransfersByToId(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		createRandomTransfer(t)
+	}
+
+	arg := GetTransfersByToIdParams{
+		ToAccountID: 1,
+		Offset:      3,
+		Limit:       3,
+	}
+	transfers, err := testQueries.GetTransfersByToId(context.Background(), arg)
+
+	require.NoError(t, err)
+
+	for _, transfer := range transfers {
+		require.NotEmpty(t, transfer)
+	}
+}
