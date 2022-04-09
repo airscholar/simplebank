@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"testing"
 
 	"github.com/airscholar/simplebank/util"
@@ -64,13 +63,12 @@ func TestUpdateEntry(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, entry1)
 	require.NotEmpty(t, updatedEntry)
-	fmt.Println(entry1, updatedEntry)
 	require.EqualValues(t, arg.Amount, updatedEntry.Amount)
 }
 
 func TestUpdateEntryFailure(t *testing.T) {
 	arg := UpdateEntryParams{
-		ID:     util.RandomInt(0, 1),
+		ID:     util.RandomInt(0, 0),
 		Amount: util.RandomMoney(),
 	}
 
