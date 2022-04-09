@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"testing"
 
@@ -42,15 +43,15 @@ func TestCreateEntryFailure(t *testing.T) {
 }
 
 func TestUpdateEntry(t *testing.T) {
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 3; i++ {
 		createRandomAccount(t)
 	}
 
-	for i := 0; i < 10; i++ {
-		createRandomEntry(t, 1, 10)
+	for i := 0; i < 3; i++ {
+		createRandomEntry(t, 1, 3)
 	}
 
-	entry1, err := testQueries.GetAccount(context.Background(), util.RandomInt(1, 10))
+	entry1, err := testQueries.GetAccount(context.Background(), util.RandomInt(1, 3))
 	require.NoError(t, err)
 
 	arg := UpdateEntryParams{
@@ -77,4 +78,19 @@ func TestUpdateEntryFailure(t *testing.T) {
 
 	require.Error(t, err)
 	require.Empty(t, updatedEntry)
+}
+
+func TestDeleteEntry(t *testing.T) {
+	createRandomAccount(t)
+
+	entry := createRandomEntry(t, 1, 1)
+
+	err := testQueries.DeleteEntry(context.Background(), entry.ID)
+
+	require.NoError(t, err)
+
+	entry, err = testQueries.GetEntry(context.Background(), entry.ID)
+
+	require.Empty(t, entry)
+	require.EqualError(t, err, sql.ErrNoRows.Error())
 }
