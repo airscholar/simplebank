@@ -112,3 +112,10 @@ func TestDeleteTransfer(t *testing.T) {
 	require.Empty(t, trf)
 	require.EqualError(t, err, sql.ErrNoRows.Error())
 }
+
+func TestDeleteTransferFailure(t *testing.T) {
+	err := testQueries.DeleteTransfer(context.Background(), 0)
+
+	require.Empty(t, err)
+}
+
