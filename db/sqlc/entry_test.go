@@ -117,3 +117,25 @@ func TestGetEntryFailure(t *testing.T) {
 	require.Empty(t, account)
 	require.EqualError(t, err, sql.ErrNoRows.Error())
 }
+
+func TestGetEntries(t *testing.T) {
+	for i := 0; i < 6; i++ {
+		createRandomAccount(t)
+	}
+
+	for i := 0; i < 6; i++ {
+		createRandomEntry(t, 1, 6)
+	}
+
+	arg := GetEntriesParams{
+		Limit:  3,
+		Offset: 3,
+	}
+	entries, err := testQueries.GetEntries(context.Background(), arg)
+
+	require.NoError(t, err)
+
+	for _, entry := range entries {
+		require.NotEmpty(t, entry)
+	}
+}
