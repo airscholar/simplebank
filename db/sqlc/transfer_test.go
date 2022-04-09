@@ -46,6 +46,9 @@ func TestUpdateTransferFromId(t *testing.T) {
 	for i := 0; i < 2; i++ {
 		createRandomAccount(t)
 	}
+	for i := 0; i < 2; i++ {
+		createRandomTransfer(t)
+	}
 
 	account1, err := testQueries.GetAccount(context.Background(), 1)
 	require.NoError(t, err)
