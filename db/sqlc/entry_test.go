@@ -27,8 +27,9 @@ func TestCreateEntry(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		createRandomAccount(t)
 	}
-
-	createRandomEntry(t, 1, 10)
+	for i := 0; i < 10; i++ {
+		createRandomEntry(t, 1, 10)
+	}
 }
 
 func TestCreateEntryFailure(t *testing.T) {
@@ -101,7 +102,7 @@ func TestDeleteEntryFailure(t *testing.T) {
 }
 
 func TestGetEntry(t *testing.T) {
-	createRandomAccount(t)
+	// createRandomAccount(t)
 	entry1 := createRandomEntry(t, 1, 1)
 	entry2, err := testQueries.GetEntry(context.Background(), entry1.ID)
 

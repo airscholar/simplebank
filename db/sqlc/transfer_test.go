@@ -12,7 +12,7 @@ import (
 func createRandomTransfer(t *testing.T) Transfer {
 	arg := CreateTransferParams{
 		FromAccountID: util.RandomInt(1, 5),
-		ToAccountID:   util.RandomInt(6, 10),
+		ToAccountID:   util.RandomInt(1, 5),
 		Amount:        util.RandomMoney(),
 	}
 
@@ -27,7 +27,9 @@ func TestCreateTransfer(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		createRandomAccount(t)
 	}
-	createRandomTransfer(t)
+	for i := 0; i < 10; i++ {
+		createRandomTransfer(t)
+	}
 }
 
 func TestCreateTransferFailure(t *testing.T) {
@@ -47,18 +49,12 @@ func TestUpdateTransferFromId(t *testing.T) {
 	for i := 0; i < 2; i++ {
 		createRandomAccount(t)
 	}
-	for i := 0; i < 2; i++ {
-		createRandomTransfer(t)
-	}
 
-	account1, err := testQueries.GetAccount(context.Background(), 1)
-	require.NoError(t, err)
-	account2, err := testQueries.GetAccount(context.Background(), 2)
-	require.NoError(t, err)
+	trf := createRandomTransfer(t)
 
 	arg := UpdateTransferByFromIdParams{
-		FromAccountID: account1.ID,
-		ToAccountID:   account2.ID,
+		FromAccountID: trf.FromAccountID,
+		ToAccountID:   util.RandomInt(1, 5),
 		Amount:        util.RandomMoney(),
 	}
 
@@ -67,25 +63,19 @@ func TestUpdateTransferFromId(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, arg.Amount, transfer.Amount)
 	require.Equal(t, arg.ToAccountID, transfer.ToAccountID)
-	require.Equal(t, account1.ID, transfer.FromAccountID)
+	require.Equal(t, arg.FromAccountID, transfer.FromAccountID)
 }
 
 func TestUpdateTransferToId(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		createRandomAccount(t)
 	}
-	for i := 0; i < 10; i++ {
-		createRandomTransfer(t)
-	}
 
-	account1, err := testQueries.GetAccount(context.Background(), 1)
-	require.NoError(t, err)
-	account2, err := testQueries.GetAccount(context.Background(), 2)
-	require.NoError(t, err)
+	trf := createRandomTransfer(t)
 
 	arg := UpdateTransferByToIdParams{
-		ToAccountID:   account2.ID,
-		FromAccountID: account1.ID,
+		ToAccountID:   trf.ToAccountID,
+		FromAccountID: util.RandomInt(1, 10),
 		Amount:        util.RandomMoney(),
 	}
 
@@ -94,7 +84,7 @@ func TestUpdateTransferToId(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, arg.Amount, transfer.Amount)
 	require.Equal(t, arg.ToAccountID, transfer.ToAccountID)
-	require.Equal(t, account1.ID, transfer.FromAccountID)
+	require.Equal(t, arg.FromAccountID, transfer.FromAccountID)
 }
 
 func TestDeleteTransfer(t *testing.T) {
